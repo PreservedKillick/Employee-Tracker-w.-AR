@@ -20,15 +20,18 @@ end
 def tracker_menu
   choice = nil
   until choice == 'X'
-    puts "'D' - to Add, List, and Edit department records"
-    puts "'E' - to Add, List, and Edit employee records"
-    puts "'X' - to Exit"
+    puts "\n\n'D' - to Add, List, and Edit department records"
+    puts "\n'E' - to Add, List, and Edit employee records"
+    puts "\n'P' - to Add, List, Assign, and Edit projects"
+    puts "\n'X' - to Exit"
     choice = gets.chomp.upcase
     case choice
       when 'E'
         employee_menu
       when 'D'
         department_menu
+      when 'P'
+        project_menu
       when 'X'
         "Later!"
       else
@@ -36,6 +39,74 @@ def tracker_menu
     end
   end
 end
+
+def department_menu
+  system "clear"
+  puts "What would you like to do?"
+  puts "\t'A' to add an department"
+  puts "\t'L' to see all your departments"
+  puts "\t'E' to edit an department entry"
+  puts "\t'M' to go back to the main menu"
+  puts "\t'X' to exit the program"
+  emp_input = gets.chomp.upcase
+  case emp_input
+  when 'A'
+    add_department
+  when 'L'
+    list_departments
+  when 'E'
+    edit_departments
+  when 'M'
+    tracker_menu
+  when 'X'
+    puts "Later!"
+  else
+    puts "Not a valid selection. Please try again"
+  end
+end
+
+def add_department
+  system "clear"
+  puts "Title of Department?"
+  title = gets.chomp.split.each{|i| i.capitalize!}.join(' ')
+  puts "Is Department fun? 'Y' for Yes or 'N' for No"
+  nice = gets.chomp.downcase
+  fun = (fun == 'y')? true : false;
+  department = Department.new({:title => title, :fun? => fun})
+  department.save
+  puts "'#{title}' has been saved to Employee List"
+end
+
+def list_departments
+  system "clear"
+  puts "Here are all of the departments currently in the database:"
+  puts_all_departments
+  puts "\n\nWould you like to see all the employees in a department?  If so, enter the name of the department you would like to see:\n"
+  dpt_input = gets.chomp.split.each{|i| i.capitalize!}.join(' ')
+  binding.pry
+  view_dpt = Department.find_by title: dpt_input
+  puts view_dpt.employees.first.name
+  puts "\n\n"
+end
+
+def edit_departments
+  system "clear"
+  puts_all_departments
+  puts "\nWhich department to edit"
+  title = gets.chomp.capitalize
+  puts "#{title} is what you want to edit"
+  puts "What is this department's new name? Leave blank to leave the same."
+  new_title = gets.chomp.split.each{|i| i.capitalize!}.join(' ')
+  new_title = (new_title != '')? new_title : title;
+  puts "Is #{new_title} fun? 'Y' for Yes, 'N' for No"
+  new_fun = gets.chomp.upcase
+  new_fun = (new_fun == 'Y')? true : false;
+  department = Department.where({:title => title}).first
+  department.update({:title => new_title, :fun? => new_fun})
+  puts "#{new_title} has been updated."
+end
+
+############################
 
 def employee_menu
   system "clear"
@@ -118,73 +189,14 @@ def edit_employees
   puts "\n\n#{new_name} has been updated."
 end
 
-def department_menu
-  system "clear"
-  puts "What would you like to do?"
-  puts "\t'A' to add an department"
-  puts "\t'L' to see all your departments"
-  puts "\t'E' to edit an department entry"
-  puts "\t'M' to go back to the main menu"
-  puts "\t'X' to exit the program"
-  emp_input = gets.chomp.upcase
-  case emp_input
-  when 'A'
-    add_department
-  when 'L'
-    list_departments
-  when 'E'
-    edit_departments
-  when 'M'
-    tracker_menu
-  when 'X'
-    puts "Later!"
-  else
-    puts "Not a valid selection. Please try again"
-  end
-end
+####################
 
-def add_department
-  system "clear"
-  puts "Title of Department?"
-  title = gets.chomp.split.each{|i| i.capitalize!}.join(' ')
-  puts "Is Department fun? 'Y' for Yes or 'N' for No"
-  nice = gets.chomp.downcase
-  fun = (fun == 'y')? true : false;
-  department = Department.new({:title => title, :fun? => fun})
-  department.save
-  puts "'#{title}' has been saved to Employee List"
-end
+# def project_menu
+#   system "clear"
+#   puts "What would you like to do?  Enter:"
+#   puts "\t"
 
-def list_departments
-  system "clear"
-  puts "Here are all of the departments currently in the database:"
-  puts_all_departments
-  puts "\n\nWould you like to see all the employees in a department?  If so, enter the name of the department you would like to see:\n"
-  dpt_input = gets.chomp.split.each{|i| i.capitalize!}.join(' ')
-  binding.pry
-  view_dpt = Department.find_by title: dpt_input
-  puts view_dpt.employees.first.name
-  puts "\n\n"
-end
-
-def edit_departments
-  system "clear"
-  puts_all_departments
-  puts "\nWhich department to edit"
-  title = gets.chomp.capitalize
-  puts "#{title} is what you want to edit"
-  puts "What is this department's new name? Leave blank to leave the same."
-  new_title = gets.chomp.split.each{|i| i.capitalize!}.join(' ')
-  new_title = (new_title != '')? new_title : title;
-  puts "Is #{new_title} fun? 'Y' for Yes, 'N' for No"
-  new_fun = gets.chomp.upcase
-  new_fun = (new_fun == 'Y')? true : false;
-  department = Department.where({:title => title}).first
-  department.update({:title => new_title, :fun? => new_fun})
-  puts "#{new_title} has been updated."
-end
-
-
+# end
 
 ############################
 # ** Helper methods below **
