@@ -1,6 +1,12 @@
 EMPLOYEE TRACKER
-3/24/2014
-project 2
+=======================
+
+March 24, 2014
+
+Epicodus: Week6, Day1 (part 2)
+
+***********************
+Lesson
 
 Build an app for a company to help track what its employees are working on. Here are the features to build:
 
